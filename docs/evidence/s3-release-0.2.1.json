@@ -1,0 +1,51 @@
+{
+  "status": "passed",
+  "version": "0.2.1",
+  "license": "MIT",
+  "wheel": "defect_agent_runtime-0.2.1-py3-none-any.whl",
+  "sdist": "defect_agent_runtime-0.2.1.tar.gz",
+  "installed_outside_checkout": true,
+  "core_import_without_claude": true,
+  "public_exports": "passed",
+  "package_queries": {
+    "joern": "present",
+    "codeql": "present"
+  },
+  "validation_cli": {
+    "status": "passed",
+    "validate": "passed",
+    "inspect": "passed",
+    "forbidden_argv_rejected": true,
+    "execution_subcommand_absent": true
+  },
+  "consumer": {
+    "status": "passed",
+    "package": "defect-agent-runtime",
+    "rules": [
+      "external.symbol-presence",
+      "external.manifest-policy"
+    ],
+    "backends": [
+      "external.symbols",
+      "external.manifest"
+    ],
+    "verdicts": [
+      "confirmed",
+      "refuted"
+    ],
+    "reopened_reports": 2,
+    "exclusion_reused": true,
+    "report_schema": {
+      "major": 1,
+      "minor": 1
+    }
+  },
+  "cpp_pipeline": {
+    "status": "passed",
+    "candidate_status": "inconclusive",
+    "blockers": [
+      "roles report unresolved items",
+      "semantic_validation lacks complete scoped coverage"
+    ]
+  }
+}
