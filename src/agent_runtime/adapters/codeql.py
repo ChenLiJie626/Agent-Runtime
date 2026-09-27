@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import os
+import shutil
 import subprocess
 import tempfile
 import time
@@ -24,7 +25,8 @@ from ..domain import Coverage, FixedSnapshot, QueryRequest
 from ..errors import InvalidInput, PolicyDenied, StaleSnapshot
 from ..ports import ProgramResult, QueryOperation
 
-_QUERY_RESOURCE = Path(__file__).with_name("codeql_lifetime_candidates.ql")
+_QUERY_RESOURCE = Path(__file__).with_name("codeql_pack") / "PotentialAccessAfterDelete.ql"
+_NORMALIZER_VERSION = "2"
 
 
 def _sha256(value: str, label: str) -> None:
@@ -61,6 +63,13 @@ class CodeQLCaptureBundle:
     database_manifest: Mapping[str, str]
     manifest_digest: str
     result_ids: tuple[str, ...]
+    source_root: str | None = None
+    allowed_uri_base_ids: tuple[str, ...] = ()
+    query_digest: str | None = None
+    query_pack_digest: str | None = None
+    query_lock_digest: str | None = None
+    compiled_query_digest: str | None = None
+    toolchain_manifest_digest: str | None = None
 
     def __post_init__(self) -> None:
         for value, label in ((self.snapshot_digest, "snapshot"),
@@ -91,9 +100,36 @@ class CodeQLCaptureBundle:
             raise InvalidInput("CodeQL database manifest digest differs")
         if _manifest(database) != supplied:
             raise StaleSnapshot("CodeQL database differs from capture manifest")
+        optional_digests = (
+            (self.query_digest, "query"),
+            (self.query_pack_digest, "query pack"),
+            (self.query_lock_digest, "query lock"),
+            (self.compiled_query_digest, "compiled query"),
+            (self.toolchain_manifest_digest, "toolchain manifest"),
+        )
+        for value, label in optional_digests:
+            if value is not None:
+                _sha256(value, label)
+        source_root = None
+        if self.source_root is not None:
+            source_input = Path(self.source_root)
+            if source_input.is_symlink():
+                raise InvalidInput("CodeQL source root must not be a symlink")
+            try:
+                source_root = str(source_input.resolve(strict=True))
+            except OSError as exc:
+                raise InvalidInput("CodeQL source root is unavailable") from exc
+            if not Path(source_root).is_dir():
+                raise InvalidInput("CodeQL source root must be a directory")
+        if len(set(self.allowed_uri_base_ids)) != len(self.allowed_uri_base_ids) or any(
+            not isinstance(value, str) or not value for value in self.allowed_uri_base_ids
+        ):
+            raise InvalidInput("CodeQL URI base allowlist is invalid")
         object.__setattr__(self, "database_directory", str(database))
         object.__setattr__(self, "database_manifest", MappingProxyType(supplied))
         object.__setattr__(self, "result_ids", tuple(sorted(self.result_ids)))
+        object.__setattr__(self, "source_root", source_root)
+        object.__setattr__(self, "allowed_uri_base_ids", tuple(sorted(self.allowed_uri_base_ids)))
 
 
 @dataclass(frozen=True)
@@ -157,11 +193,18 @@ class CodeQLReplayProgramQuery:
         self.bundle = bundle
         self.config = config
         self._query_digest = bytes_digest(_QUERY_RESOURCE.read_bytes())
+        if bundle.query_digest is not None and bundle.query_digest != self._query_digest:
+            raise StaleSnapshot("packaged CodeQL query differs from capture binding")
         self.backend_version = digest({
             "release": config.release,
             "cli_digest": config.cli_digest,
             "manifest_digest": bundle.manifest_digest,
             "query_digest": self._query_digest,
+            "query_pack_digest": bundle.query_pack_digest,
+            "query_lock_digest": bundle.query_lock_digest,
+            "compiled_query_digest": bundle.compiled_query_digest,
+            "toolchain_manifest_digest": bundle.toolchain_manifest_digest,
+            "normalizer_version": _NORMALIZER_VERSION,
         })[:16]
 
     def _verify_inputs(self) -> None:
@@ -173,10 +216,39 @@ class CodeQLReplayProgramQuery:
             raise StaleSnapshot("CodeQL database differs from capture manifest")
 
     @staticmethod
-    def _uri(value: Any) -> str:
+    def _uri(
+        artifact: Mapping[str, Any], uri_bases: Mapping[str, Any],
+        source_root: str | None, allowed_uri_base_ids: tuple[str, ...],
+    ) -> str:
+        value = artifact.get("uri")
         if not isinstance(value, str) or not value:
             raise InvalidInput("SARIF result lacks a repository-relative URI")
         uri = unquote(value)
+        base_id = artifact.get("uriBaseId")
+        if base_id is not None:
+            if not isinstance(base_id, str) or base_id not in allowed_uri_base_ids:
+                raise InvalidInput("SARIF result uses an unregistered URI base")
+            base = uri_bases.get(base_id)
+            if base is None and base_id == "%SRCROOT%" and source_root is not None:
+                pass
+            elif not isinstance(base, Mapping) or not isinstance(base.get("uri"), str):
+                raise InvalidInput("SARIF URI base is missing or malformed")
+            else:
+                base_uri = unquote(base["uri"])
+                if not base_uri.startswith("file://") or source_root is None:
+                    raise InvalidInput("SARIF URI base is not bound to the capture source")
+                base_path = Path(base_uri.removeprefix("file://")).resolve()
+                if base_path != Path(source_root):
+                    raise InvalidInput("SARIF URI base escapes the capture source")
+        elif uri.startswith("file://"):
+            if source_root is None:
+                raise InvalidInput("absolute SARIF URI lacks a bound source root")
+            try:
+                uri = Path(uri.removeprefix("file://")).resolve().relative_to(
+                    Path(source_root)
+                ).as_posix()
+            except ValueError as exc:
+                raise InvalidInput("SARIF URI escapes the capture source") from exc
         for prefix in ("file://$SNAPSHOT_ROOT/", "$SNAPSHOT_ROOT/"):
             if uri.startswith(prefix):
                 uri = uri[len(prefix):]
@@ -185,7 +257,11 @@ class CodeQLReplayProgramQuery:
         return uri
 
     @classmethod
-    def _normalize_result(cls, result: Mapping[str, Any]) -> dict[str, Any]:
+    def _normalize_result(
+        cls, result: Mapping[str, Any], *, uri_bases: Mapping[str, Any] | None = None,
+        source_root: str | None = None,
+        allowed_uri_base_ids: tuple[str, ...] = (),
+    ) -> dict[str, Any]:
         rule_id = result.get("ruleId")
         message = result.get("message")
         locations = result.get("locations")
@@ -237,19 +313,24 @@ class CodeQLReplayProgramQuery:
             )
         ):
             raise InvalidInput("CodeQL SARIF fingerprints are malformed")
-        normalized = {
+        stable = {
             "rule_id": rule_id,
             "message": message_text,
-            "uri": cls._uri(artifact.get("uri")),
+            "uri": cls._uri(
+                artifact, uri_bases or {}, source_root, allowed_uri_base_ids
+            ),
             "region": {
                 "start_line": values[0], "start_column": values[1],
                 "end_line": values[2], "end_column": values[3],
             },
+        }
+        normalized = {
+            **stable,
             "fingerprints": [
                 {"name": key, "value": fingerprints[key]} for key in sorted(fingerprints)
             ],
         }
-        return {"result_id": digest(normalized), **normalized}
+        return {"result_id": digest(stable), **normalized}
 
     def _parse_sarif(self, output: Path) -> tuple[dict[str, Any], ...]:
         try:
@@ -269,10 +350,17 @@ class CodeQLReplayProgramQuery:
         for run in runs:
             if not isinstance(run, Mapping) or not isinstance(run.get("results", []), list):
                 raise InvalidInput("CodeQL SARIF run lacks results")
+            uri_bases = run.get("originalUriBaseIds", {})
+            if not isinstance(uri_bases, Mapping):
+                raise InvalidInput("CodeQL SARIF URI bases are malformed")
             for result in run.get("results", []):
                 if not isinstance(result, Mapping):
                     raise InvalidInput("CodeQL SARIF result is malformed")
-                normalized.append(self._normalize_result(result))
+                normalized.append(self._normalize_result(
+                    result, uri_bases=uri_bases,
+                    source_root=self.bundle.source_root,
+                    allowed_uri_base_ids=self.bundle.allowed_uri_base_ids,
+                ))
         identifiers = [item["result_id"] for item in normalized]
         if len(identifiers) != len(set(identifiers)):
             raise InvalidInput("CodeQL SARIF contains duplicate normalized results")
@@ -293,12 +381,14 @@ class CodeQLReplayProgramQuery:
         except FileNotFoundError:
             return b""
 
-    def _run(self, output: Path, *, timeout_ms: int) -> tuple[str, bytes, bytes]:
+    def _run(
+        self, output: Path, database: Path, *, timeout_ms: int
+    ) -> tuple[str, bytes, bytes]:
         argv = [
             self.config.cli_path,
             "database",
             "analyze",
-            self.bundle.database_directory,
+            str(database),
             str(_QUERY_RESOURCE),
             "--format=sarif-latest",
             f"--output={output}",
@@ -371,9 +461,13 @@ class CodeQLReplayProgramQuery:
             raise PolicyDenied("CodeQL result is outside the registered capture")
         self._verify_inputs()
         with tempfile.TemporaryDirectory(prefix="agent-runtime-codeql-") as directory:
-            output = Path(directory) / "result.sarif"
+            scratch = Path(directory)
+            output = scratch / "result.sarif"
+            scratch_database = scratch / "database"
+            shutil.copytree(self.bundle.database_directory, scratch_database)
             status, stdout, stderr = self._run(
-                output, timeout_ms=min(request.timeout_ms, self.config.timeout_ms)
+                output, scratch_database,
+                timeout_ms=min(request.timeout_ms, self.config.timeout_ms),
             )
             self._verify_inputs()
             if status == "timeout":
@@ -407,6 +501,11 @@ class CodeQLReplayProgramQuery:
                 "tool_release": self.config.release,
                 "database_manifest_digest": self.bundle.manifest_digest,
                 "query_digest": self._query_digest,
+                "query_pack_digest": self.bundle.query_pack_digest,
+                "query_lock_digest": self.bundle.query_lock_digest,
+                "compiled_query_digest": self.bundle.compiled_query_digest,
+                "toolchain_manifest_digest": self.bundle.toolchain_manifest_digest,
+                "normalizer_version": _NORMALIZER_VERSION,
             },
             "source_digest": self.bundle.source_digest,
             "compile_database_digest": self.bundle.compile_db_digest,

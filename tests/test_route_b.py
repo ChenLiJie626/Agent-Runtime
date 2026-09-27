@@ -319,8 +319,13 @@ class CodeQLReplayTests(unittest.TestCase):
         self.assertEqual(result.status, "complete")
         self.assertIn(self.result_id.encode(), result.raw)
         argv, kwargs = calls[0]
-        self.assertEqual(argv[:5], [str(self.cli.resolve()), "database", "analyze", str(self.database.resolve()),
-                                    str(Path(__file__).parents[1] / "src/agent_runtime/adapters/codeql_lifetime_candidates.ql")])
+        self.assertEqual(argv[:3], [str(self.cli.resolve()), "database", "analyze"])
+        self.assertNotEqual(Path(argv[3]), self.database.resolve())
+        self.assertEqual(Path(argv[3]).name, "database")
+        self.assertEqual(
+            argv[4],
+            str(Path(__file__).parents[1] / "src/agent_runtime/adapters/codeql_pack/PotentialAccessAfterDelete.ql"),
+        )
         self.assertFalse(kwargs["shell"])
         self.assertNotIn("PYTHONPATH", kwargs["env"])
 
@@ -398,6 +403,37 @@ class CodeQLReplayTests(unittest.TestCase):
             self._query_with_immediate_process({"runs": [{"results": [traversal]}]}).status,
             "failed",
         )
+
+
+    def test_result_id_ignores_fingerprint_changes(self):
+        changed = json.loads(json.dumps(self.sarif_result))
+        changed["partialFingerprints"] = {"primaryLocationLineHash": "different"}
+        first = CodeQLReplayProgramQuery._normalize_result(self.sarif_result)
+        second = CodeQLReplayProgramQuery._normalize_result(changed)
+        self.assertEqual(first["result_id"], second["result_id"])
+        self.assertNotEqual(first["fingerprints"], second["fingerprints"])
+
+    def test_registered_sarif_uri_base_is_normalized_to_repository_path(self):
+        source = self.root / "source"
+        source.mkdir()
+        result = json.loads(json.dumps(self.sarif_result))
+        result["locations"][0]["physicalLocation"]["artifactLocation"] = {
+            "uri": "src/a.cpp", "uriBaseId": "%SRCROOT%",
+        }
+        normalized = CodeQLReplayProgramQuery._normalize_result(
+            result,
+            uri_bases={"%SRCROOT%": {"uri": source.resolve().as_uri() + "/"}},
+            source_root=str(source.resolve()),
+            allowed_uri_base_ids=("%SRCROOT%",),
+        )
+        self.assertEqual(normalized["uri"], "src/a.cpp")
+        with self.assertRaises(InvalidInput):
+            CodeQLReplayProgramQuery._normalize_result(
+                result,
+                uri_bases={"%SRCROOT%": {"uri": self.root.resolve().as_uri() + "/"}},
+                source_root=str(source.resolve()),
+                allowed_uri_base_ids=("%SRCROOT%",),
+            )
 
     def test_capture_and_cli_symlinks_are_rejected(self):
         database_link = self.root / "database-link"

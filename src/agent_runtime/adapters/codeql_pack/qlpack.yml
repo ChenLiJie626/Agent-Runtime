@@ -1,0 +1,4 @@
+name: agent-runtime/codeql-lifetime-candidates
+version: 0.3.0
+dependencies:
+  codeql/cpp-all: "*"

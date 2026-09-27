@@ -1,0 +1,36 @@
+{
+  "archive": {
+    "sha256": "b63286d8189b90f6045a18797d191603f611f0003216783cade7166ec80ada45",
+    "size": 876476743,
+    "url": "https://github.com/github/codeql-action/releases/download/codeql-bundle-v2.27.1/codeql-bundle-osx64.tar.zst"
+  },
+  "cli_version": "2.27.1",
+  "extracted_tree": {
+    "cli_sha256": "5010324098d11f9e2d34e0fcf53bb44e40e8e3ffc8aecefe695269b54edaa413",
+    "file_count": 37160,
+    "manifest_digest": "bfb92727a9c57df5549afce544d6acce9dd82a6280706032eac2aafc41647169",
+    "resolved_qlpacks_digest": "8c8cb49f45f3c8baad43b710156ff27a54c21dd770e67359050eb281ce374dc2"
+  },
+  "host_architecture": "arm64-with-rosetta",
+  "limits": {
+    "analyze_timeout_ms": 300000,
+    "compile_timeout_ms": 300000,
+    "database_timeout_ms": 600000,
+    "max_process_output_bytes": 16777216,
+    "max_sarif_bytes": 16777216,
+    "prepare_timeout_ms": 600000
+  },
+  "platform": "osx64",
+  "query_file": "src/agent_runtime/adapters/codeql_pack/PotentialAccessAfterDelete.ql",
+  "query_id": "cpp/potential-access-after-delete-candidate",
+  "query_pack": "agent-runtime/codeql-lifetime-candidates",
+  "release": "codeql-bundle-v2.27.1",
+  "release_date": "2026-09-22",
+  "schema": "agent-runtime/codeql-toolchain-manifest/v1",
+  "security": {
+    "download_proxy": "http://127.0.0.1:17891",
+    "offline_after_prepare": true,
+    "request_supplied_execution_fields": false
+  },
+  "toolchain_id": "codeql-cpp-v2.27.1"
+}

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "defect-agent-runtime"
-version = "0.2.1"
+version = "0.3.0"
 description = "Evidence-first runtime foundation for collaborative defect analysis agents"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -23,4 +23,4 @@ where = ["src"]
 
 [tool.setuptools.package-data]
 "agent_runtime" = ["py.typed"]
-"agent_runtime.adapters" = ["*.sc", "*.ql"]
+"agent_runtime.adapters" = ["*.sc", "codeql_pack/*.ql", "codeql_pack/*.yml"]
