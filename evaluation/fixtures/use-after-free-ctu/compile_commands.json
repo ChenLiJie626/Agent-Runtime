@@ -1,0 +1,22 @@
+[
+  {
+    "directory": ".",
+    "file": "src/main.cpp",
+    "arguments": ["clang++", "-Iinclude", "-std=c++17", "-c", "src/main.cpp"]
+  },
+  {
+    "directory": ".",
+    "file": "src/heap_owner.cpp",
+    "arguments": ["clang++", "-Iinclude", "-std=c++17", "-c", "src/heap_owner.cpp"]
+  },
+  {
+    "directory": ".",
+    "file": "src/borrowed_view.cpp",
+    "arguments": ["clang++", "-Iinclude", "-std=c++17", "-c", "src/borrowed_view.cpp"]
+  },
+  {
+    "directory": ".",
+    "file": "src/workflow.cpp",
+    "arguments": ["clang++", "-Iinclude", "-std=c++17", "-c", "src/workflow.cpp"]
+  }
+]

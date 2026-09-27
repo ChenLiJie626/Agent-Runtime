@@ -1,0 +1,216 @@
+{
+  "schema_version": {
+    "major": 1,
+    "minor": 0
+  },
+  "dataset_id": "public-cpp-smoke-v1",
+  "frozen_at": "2026-09-26T00:00:00Z",
+  "provenance": {
+    "name": "CloudAEye C/C++ Code-Review Benchmark",
+    "url": "https://github.com/CloudAEye/c_cpp_benchmark",
+    "revision": "60733901a3deef2c7128b883cde420fea86d2186",
+    "license_spdx": "MIT",
+    "license_url": "https://github.com/CloudAEye/c_cpp_benchmark/blob/60733901a3deef2c7128b883cde420fea86d2186/LICENSE",
+    "source_artifact": {
+      "url": "https://raw.githubusercontent.com/CloudAEye/c_cpp_benchmark/60733901a3deef2c7128b883cde420fea86d2186/benchmark_final16.json",
+      "sha256": "2c25ed23ab24a8ae153d3762ba73dce4b46d615100dd902dbae20cf851e64f3b",
+      "size_bytes": 32814
+    }
+  },
+  "samples": [
+    {
+      "sample_id": "nlohmann-json-pr-5163",
+      "project_id": "nlohmann/json",
+      "repository_url": "https://github.com/nlohmann/json",
+      "language": "C++",
+      "partition": "holdout",
+      "public_at": "2026-05-10T15:26:49Z",
+      "pr_url": "https://github.com/nlohmann/json/pull/5163",
+      "base_commit": "f0bf4c731a53aab29ebde0234385b9e63bf70dcd",
+      "head_commit": "ee4ee35212f2c168199a8d6aad434869c0297252",
+      "license": {
+        "spdx": "MIT",
+        "url": "https://github.com/nlohmann/json/blob/ee4ee35212f2c168199a8d6aad434869c0297252/LICENSE.MIT",
+        "redistribution": "Source archives and derived metadata may be redistributed under MIT terms with the license notice."
+      },
+      "artifacts": [
+        {
+          "role": "base_source",
+          "url": "https://github.com/nlohmann/json/archive/f0bf4c731a53aab29ebde0234385b9e63bf70dcd.tar.gz",
+          "sha256": "8f19933ee1a095c0ec3d054297cd6ac81476104b4802379e2bfe13668d33ff30",
+          "size_bytes": 9744875
+        },
+        {
+          "role": "head_source",
+          "url": "https://github.com/nlohmann/json/archive/ee4ee35212f2c168199a8d6aad434869c0297252.tar.gz",
+          "sha256": "fa689181d269963a8e41798748c5ef364fcdf6c6accf54b1f51ff28a213f7c34",
+          "size_bytes": 9745691
+        }
+      ],
+      "build": {
+        "variant_id": "clang10-cxx11-regression2",
+        "commands": [
+          [
+            "cmake",
+            "-S",
+            ".",
+            "-B",
+            "build",
+            "-DJSON_BuildTests=ON",
+            "-DJSON_MultipleHeaders=ON"
+          ],
+          [
+            "cmake",
+            "--build",
+            "build",
+            "--target",
+            "test-regression2_cpp11",
+            "--parallel",
+            "2"
+          ]
+        ],
+        "toolchain": {
+          "cxx": "clang++",
+          "version": "10.x",
+          "cmake": "3.16+"
+        },
+        "recipe_digest": "4c7030fbdac622b5bf84a8da6e314ab63b6098ec1997b7c73e2a0ce5caedb23c",
+        "dependency_digest": "6da539d50c0fe357c54e0b1f57a0bd0ee92460a7702a93ffc66bf38d948ef490",
+        "dependency_mode": "vendored-in-source-archive",
+        "network": "disabled"
+      },
+      "input_policy": {
+        "allowed_to_agent": [
+          "base_source",
+          "head_source",
+          "build_recipe"
+        ],
+        "withheld_from_agent": [
+          "known_defects",
+          "fix_metadata",
+          "review_comments"
+        ]
+      },
+      "surface": {
+        "files": 4,
+        "changed_lines": 135,
+        "paths": [
+          "include/nlohmann/detail/conversions/from_json.hpp",
+          "include/nlohmann/ordered_map.hpp",
+          "single_include/nlohmann/json.hpp",
+          "tests/src/unit-regression2.cpp"
+        ]
+      },
+      "known_defects": [
+        {
+          "defect_id": "nlohmann-json-5163-unknown-clang-warning",
+          "category": "build_compatibility",
+          "severity": "low",
+          "difficulty": "medium",
+          "location": {
+            "path": "tests/src/unit-regression2.cpp",
+            "line": 1279
+          },
+          "label_source_url": "https://github.com/nlohmann/json/pull/5163#discussion_r3229085080",
+          "label_digest": "11c0abcc01636e557dd969b7b7373d05712eda7800ba00d74e99241409fc5eab"
+        }
+      ]
+    },
+    {
+      "sample_id": "tesseract-pr-4138",
+      "project_id": "tesseract-ocr/tesseract",
+      "repository_url": "https://github.com/tesseract-ocr/tesseract",
+      "language": "C++",
+      "partition": "tuning",
+      "public_at": "2023-10-05T07:35:50Z",
+      "pr_url": "https://github.com/tesseract-ocr/tesseract/pull/4138",
+      "base_commit": "063ad31a6018af928816ead25ffbb7584f667d22",
+      "head_commit": "3173bfeda9f47e010c270363d6841f237b671fc9",
+      "license": {
+        "spdx": "Apache-2.0",
+        "url": "https://github.com/tesseract-ocr/tesseract/blob/3173bfeda9f47e010c270363d6841f237b671fc9/LICENSE",
+        "redistribution": "Source archives and derived metadata may be redistributed under Apache-2.0 terms with the required notices."
+      },
+      "artifacts": [
+        {
+          "role": "base_source",
+          "url": "https://github.com/tesseract-ocr/tesseract/archive/063ad31a6018af928816ead25ffbb7584f667d22.tar.gz",
+          "sha256": "7556fde9a6763a90d0c6933292bbaecc034264f6687b7aa1a684bac972a0768d",
+          "size_bytes": 1919709
+        },
+        {
+          "role": "head_source",
+          "url": "https://github.com/tesseract-ocr/tesseract/archive/3173bfeda9f47e010c270363d6841f237b671fc9.tar.gz",
+          "sha256": "fabd1b9dd28120ac7fe4f1bde139c6b4abacee9d77ccd5e0bc80f72cfe5ff5fb",
+          "size_bytes": 1919785
+        }
+      ],
+      "build": {
+        "variant_id": "ubuntu22-clang14-tesseract",
+        "commands": [
+          [
+            "cmake",
+            "-S",
+            ".",
+            "-B",
+            "build",
+            "-DBUILD_TRAINING_TOOLS=OFF",
+            "-DBUILD_TESTS=OFF"
+          ],
+          [
+            "cmake",
+            "--build",
+            "build",
+            "--target",
+            "tesseract",
+            "--parallel",
+            "2"
+          ]
+        ],
+        "toolchain": {
+          "cxx": "clang++",
+          "version": "14.x",
+          "cmake": "3.22.x"
+        },
+        "recipe_digest": "9766c7fb5916faf5048f6b4eaf753f2dadf6087157f56a464e1674e6818d0a6b",
+        "dependency_digest": "7491d221cf44bf7d95acf3794019b4c720b5f91e5099e255e158a42c52ad06e0",
+        "dependency_lock_path": "evaluation/builds/tesseract-ubuntu22-clang14/packages.lock",
+        "dependency_mode": "pinned-ubuntu-package-set",
+        "network": "disabled"
+      },
+      "input_policy": {
+        "allowed_to_agent": [
+          "base_source",
+          "head_source",
+          "build_recipe"
+        ],
+        "withheld_from_agent": [
+          "known_defects",
+          "fix_metadata",
+          "review_comments"
+        ]
+      },
+      "surface": {
+        "files": 1,
+        "changed_lines": 44,
+        "paths": [
+          "src/api/hocrrenderer.cpp"
+        ]
+      },
+      "known_defects": [
+        {
+          "defect_id": "tesseract-4138-unreachable-document-body",
+          "category": "logic_error",
+          "severity": "high",
+          "difficulty": "medium",
+          "location": {
+            "path": "src/api/hocrrenderer.cpp",
+            "line": 504
+          },
+          "label_source_url": "https://github.com/tesseract-ocr/tesseract/pull/4138#discussion_r1347206984",
+          "label_digest": "c20dc662fc86022202f8a8b941fc7b26fad08abe645091757ed834de6b6f73fc"
+        }
+      ]
+    }
+  ]
+}

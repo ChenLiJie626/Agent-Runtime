@@ -1,0 +1,482 @@
+{
+  "schema_version": {
+    "major": 1,
+    "minor": 0
+  },
+  "dataset_id": "public-cpp-uaf-v1",
+  "frozen_at": "2026-09-26T00:00:00Z",
+  "provenance": {
+    "name": "Curated public C++ use-after-free corpus",
+    "url": "https://github.com/NationalSecurityAgency/ghidra/security/advisories/GHSA-gqh9-2c72-wpjc",
+    "revision": "0de0b5b541d5a436276da9f45d161d213ec1ee3782662305300a15034b7e6b76",
+    "license_spdx": "Apache-2.0",
+    "license_url": "https://github.com/NationalSecurityAgency/ghidra/blob/4a9b40c453ad0fa71a4d9adda44cc7917affe118/LICENSE",
+    "source_artifact": {
+      "url": "https://api.github.com/repos/NationalSecurityAgency/ghidra/security-advisories/GHSA-gqh9-2c72-wpjc",
+      "sha256": "da21b124983a465c0027fa4a34361844ccbafbd904f41a703474ce24085ea5b4",
+      "size_bytes": 17401
+    }
+  },
+  "samples": [
+    {
+      "sample_id": "qlever-2812-local-vocab-lifetime",
+      "project_id": "ad-freiburg/qlever",
+      "repository_url": "https://github.com/ad-freiburg/qlever",
+      "language": "C++",
+      "partition": "tuning",
+      "public_at": "2026-04-11T20:27:05Z",
+      "pr_url": "https://github.com/ad-freiburg/qlever/pull/2812",
+      "base_commit": "cf5c9d547403c5babac97d35b6cb4868825dbf98",
+      "head_commit": "7f0a75c75a4b21b162b755c4967d013447f6746b",
+      "license": {
+        "spdx": "Apache-2.0",
+        "url": "https://github.com/ad-freiburg/qlever/blob/7f0a75c75a4b21b162b755c4967d013447f6746b/LICENSE",
+        "redistribution": "The pinned primary source files and derived metadata may be redistributed under Apache-2.0 terms with required notices."
+      },
+      "artifact_scope": "primary-defect-file",
+      "artifacts": [
+        {
+          "role": "base_source",
+          "url": "https://raw.githubusercontent.com/ad-freiburg/qlever/cf5c9d547403c5babac97d35b6cb4868825dbf98/src/util/JoinAlgorithms/JoinAlgorithms.h",
+          "sha256": "cbbf8a12a01e30c41c23953b740c9243e568f78d83999f1f555594c2adf484d2",
+          "size_bytes": 87379
+        },
+        {
+          "role": "head_source",
+          "url": "https://raw.githubusercontent.com/ad-freiburg/qlever/7f0a75c75a4b21b162b755c4967d013447f6746b/src/util/JoinAlgorithms/JoinAlgorithms.h",
+          "sha256": "8034393c24582107988eefe05f803e9fb1fe1e962422ab75ac5516a39228aa30",
+          "size_bytes": 87924
+        }
+      ],
+      "build": {
+        "variant_id": "label-slice-clang14",
+        "commands": [
+          [
+            "cmake",
+            "-S",
+            ".",
+            "-B",
+            "build",
+            "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+            "-DCMAKE_CXX_COMPILER=clang++-14"
+          ],
+          [
+            "cmake",
+            "--build",
+            "build",
+            "--parallel",
+            "2"
+          ]
+        ],
+        "toolchain": {
+          "cxx": "clang++-14",
+          "version": "14.0.0",
+          "cmake": "3.22.x"
+        },
+        "recipe_digest": "12bc0bedc315b6798bf0018f91d6e1f9ba6d6cd7761d3c8ab2cb0366c6836938",
+        "dependency_digest": "e10dacb8eee3c8c0d6d4f0d382d5076333e0ebd2de23c51fc858871c6b9dbaaf",
+        "dependency_mode": "upstream-primary-file-slice",
+        "network": "disabled"
+      },
+      "input_policy": {
+        "allowed_to_agent": [
+          "base_source",
+          "build_recipe"
+        ],
+        "withheld_from_agent": [
+          "head_source",
+          "known_defects",
+          "fix_metadata",
+          "review_comments"
+        ]
+      },
+      "surface": {
+        "files": 1,
+        "changed_lines": 21,
+        "paths": [
+          "src/util/JoinAlgorithms/JoinAlgorithms.h"
+        ]
+      },
+      "known_defects": [
+        {
+          "defect_id": "qlever-2812-local-vocab-lifetime-uaf",
+          "category": "use_after_free",
+          "severity": "high",
+          "difficulty": "high",
+          "location": {
+            "path": "src/util/JoinAlgorithms/JoinAlgorithms.h",
+            "line": 1755
+          },
+          "label_source_url": "https://github.com/ad-freiburg/qlever/pull/2812",
+          "label_digest": "5580a80ddd09547a3ca9552a9a7cd694e8cb530f971cd0b3ce9edfffac313ab3"
+        }
+      ]
+    },
+    {
+      "sample_id": "qlever-2812-coroutine-destruction-order",
+      "project_id": "ad-freiburg/qlever",
+      "repository_url": "https://github.com/ad-freiburg/qlever",
+      "language": "C++",
+      "partition": "tuning",
+      "public_at": "2026-04-11T20:27:05Z",
+      "pr_url": "https://github.com/ad-freiburg/qlever/pull/2812",
+      "base_commit": "cf5c9d547403c5babac97d35b6cb4868825dbf98",
+      "head_commit": "7f0a75c75a4b21b162b755c4967d013447f6746b",
+      "license": {
+        "spdx": "Apache-2.0",
+        "url": "https://github.com/ad-freiburg/qlever/blob/7f0a75c75a4b21b162b755c4967d013447f6746b/LICENSE",
+        "redistribution": "The pinned primary source files and derived metadata may be redistributed under Apache-2.0 terms with required notices."
+      },
+      "artifact_scope": "primary-defect-file",
+      "artifacts": [
+        {
+          "role": "base_source",
+          "url": "https://raw.githubusercontent.com/ad-freiburg/qlever/cf5c9d547403c5babac97d35b6cb4868825dbf98/src/util/CompressorStream.h",
+          "sha256": "237e89dfda588b373f87b90e466a7850f3019354cc0548774cbaeca2ea3857ec",
+          "size_bytes": 1964
+        },
+        {
+          "role": "head_source",
+          "url": "https://raw.githubusercontent.com/ad-freiburg/qlever/7f0a75c75a4b21b162b755c4967d013447f6746b/src/util/CompressorStream.h",
+          "sha256": "fbc5094155c58ce5ed07c97ae8fb66da72b1c3fdc9cd646c3a844af836a82b28",
+          "size_bytes": 2333
+        }
+      ],
+      "build": {
+        "variant_id": "label-slice-clang14",
+        "commands": [
+          [
+            "cmake",
+            "-S",
+            ".",
+            "-B",
+            "build",
+            "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+            "-DCMAKE_CXX_COMPILER=clang++-14"
+          ],
+          [
+            "cmake",
+            "--build",
+            "build",
+            "--parallel",
+            "2"
+          ]
+        ],
+        "toolchain": {
+          "cxx": "clang++-14",
+          "version": "14.0.0",
+          "cmake": "3.22.x"
+        },
+        "recipe_digest": "12bc0bedc315b6798bf0018f91d6e1f9ba6d6cd7761d3c8ab2cb0366c6836938",
+        "dependency_digest": "e10dacb8eee3c8c0d6d4f0d382d5076333e0ebd2de23c51fc858871c6b9dbaaf",
+        "dependency_mode": "upstream-primary-file-slice",
+        "network": "disabled"
+      },
+      "input_policy": {
+        "allowed_to_agent": [
+          "base_source",
+          "build_recipe"
+        ],
+        "withheld_from_agent": [
+          "head_source",
+          "known_defects",
+          "fix_metadata",
+          "review_comments"
+        ]
+      },
+      "surface": {
+        "files": 1,
+        "changed_lines": 7,
+        "paths": [
+          "src/util/CompressorStream.h"
+        ]
+      },
+      "known_defects": [
+        {
+          "defect_id": "qlever-2812-coroutine-destruction-order-uaf",
+          "category": "use_after_free",
+          "severity": "high",
+          "difficulty": "high",
+          "location": {
+            "path": "src/util/CompressorStream.h",
+            "line": 33
+          },
+          "label_source_url": "https://github.com/ad-freiburg/qlever/pull/2812",
+          "label_digest": "5c744e35e9ef48b1a1016383f20254cd8195a9dcb641d986c3ae85b36866c0b4"
+        }
+      ]
+    },
+    {
+      "sample_id": "qlever-2812-query-context-lifetime",
+      "project_id": "ad-freiburg/qlever",
+      "repository_url": "https://github.com/ad-freiburg/qlever",
+      "language": "C++",
+      "partition": "tuning",
+      "public_at": "2026-04-11T20:27:05Z",
+      "pr_url": "https://github.com/ad-freiburg/qlever/pull/2812",
+      "base_commit": "cf5c9d547403c5babac97d35b6cb4868825dbf98",
+      "head_commit": "7f0a75c75a4b21b162b755c4967d013447f6746b",
+      "license": {
+        "spdx": "Apache-2.0",
+        "url": "https://github.com/ad-freiburg/qlever/blob/7f0a75c75a4b21b162b755c4967d013447f6746b/LICENSE",
+        "redistribution": "The pinned primary source files and derived metadata may be redistributed under Apache-2.0 terms with required notices."
+      },
+      "artifact_scope": "primary-defect-file",
+      "artifacts": [
+        {
+          "role": "base_source",
+          "url": "https://raw.githubusercontent.com/ad-freiburg/qlever/cf5c9d547403c5babac97d35b6cb4868825dbf98/src/engine/Server.cpp",
+          "sha256": "ec35ab2f1235891d6a66fa97dc73d70024758d2af141515849584cf797197f0b",
+          "size_bytes": 70154
+        },
+        {
+          "role": "head_source",
+          "url": "https://raw.githubusercontent.com/ad-freiburg/qlever/7f0a75c75a4b21b162b755c4967d013447f6746b/src/engine/Server.cpp",
+          "sha256": "6b01d1abe0d8b499902dce0729d6828c362f6d4f57f7c9f1af2a6846a825ac12",
+          "size_bytes": 70338
+        }
+      ],
+      "build": {
+        "variant_id": "label-slice-clang14",
+        "commands": [
+          [
+            "cmake",
+            "-S",
+            ".",
+            "-B",
+            "build",
+            "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+            "-DCMAKE_CXX_COMPILER=clang++-14"
+          ],
+          [
+            "cmake",
+            "--build",
+            "build",
+            "--parallel",
+            "2"
+          ]
+        ],
+        "toolchain": {
+          "cxx": "clang++-14",
+          "version": "14.0.0",
+          "cmake": "3.22.x"
+        },
+        "recipe_digest": "12bc0bedc315b6798bf0018f91d6e1f9ba6d6cd7761d3c8ab2cb0366c6836938",
+        "dependency_digest": "e10dacb8eee3c8c0d6d4f0d382d5076333e0ebd2de23c51fc858871c6b9dbaaf",
+        "dependency_mode": "upstream-primary-file-slice",
+        "network": "disabled"
+      },
+      "input_policy": {
+        "allowed_to_agent": [
+          "base_source",
+          "build_recipe"
+        ],
+        "withheld_from_agent": [
+          "head_source",
+          "known_defects",
+          "fix_metadata",
+          "review_comments"
+        ]
+      },
+      "surface": {
+        "files": 1,
+        "changed_lines": 77,
+        "paths": [
+          "src/engine/Server.cpp"
+        ]
+      },
+      "known_defects": [
+        {
+          "defect_id": "qlever-2812-query-context-lifetime-uaf",
+          "category": "use_after_free",
+          "severity": "high",
+          "difficulty": "high",
+          "location": {
+            "path": "src/engine/Server.cpp",
+            "line": 327
+          },
+          "label_source_url": "https://github.com/ad-freiburg/qlever/pull/2812",
+          "label_digest": "5e0a672df55905885c34e2c184662aee90fdc6d79f0653494abc24a934bcb29a"
+        }
+      ]
+    },
+    {
+      "sample_id": "qlever-2812-async-member-destruction",
+      "project_id": "ad-freiburg/qlever",
+      "repository_url": "https://github.com/ad-freiburg/qlever",
+      "language": "C++",
+      "partition": "tuning",
+      "public_at": "2026-04-11T20:27:05Z",
+      "pr_url": "https://github.com/ad-freiburg/qlever/pull/2812",
+      "base_commit": "cf5c9d547403c5babac97d35b6cb4868825dbf98",
+      "head_commit": "7f0a75c75a4b21b162b755c4967d013447f6746b",
+      "license": {
+        "spdx": "Apache-2.0",
+        "url": "https://github.com/ad-freiburg/qlever/blob/7f0a75c75a4b21b162b755c4967d013447f6746b/LICENSE",
+        "redistribution": "The pinned primary source files and derived metadata may be redistributed under Apache-2.0 terms with required notices."
+      },
+      "artifact_scope": "primary-defect-file",
+      "artifacts": [
+        {
+          "role": "base_source",
+          "url": "https://raw.githubusercontent.com/ad-freiburg/qlever/cf5c9d547403c5babac97d35b6cb4868825dbf98/src/engine/idTable/CompressedExternalIdTable.h",
+          "sha256": "ad2f53f7493ca0a5d03234112012124f438308228f3eca0e70aa228656b991d9",
+          "size_bytes": 36948
+        },
+        {
+          "role": "head_source",
+          "url": "https://raw.githubusercontent.com/ad-freiburg/qlever/7f0a75c75a4b21b162b755c4967d013447f6746b/src/engine/idTable/CompressedExternalIdTable.h",
+          "sha256": "c3dcd0912ac24305b8cb394b5d244eaf53afe5e7d77ebcbeb030b395541cf240",
+          "size_bytes": 37323
+        }
+      ],
+      "build": {
+        "variant_id": "label-slice-clang14",
+        "commands": [
+          [
+            "cmake",
+            "-S",
+            ".",
+            "-B",
+            "build",
+            "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+            "-DCMAKE_CXX_COMPILER=clang++-14"
+          ],
+          [
+            "cmake",
+            "--build",
+            "build",
+            "--parallel",
+            "2"
+          ]
+        ],
+        "toolchain": {
+          "cxx": "clang++-14",
+          "version": "14.0.0",
+          "cmake": "3.22.x"
+        },
+        "recipe_digest": "12bc0bedc315b6798bf0018f91d6e1f9ba6d6cd7761d3c8ab2cb0366c6836938",
+        "dependency_digest": "e10dacb8eee3c8c0d6d4f0d382d5076333e0ebd2de23c51fc858871c6b9dbaaf",
+        "dependency_mode": "upstream-primary-file-slice",
+        "network": "disabled"
+      },
+      "input_policy": {
+        "allowed_to_agent": [
+          "base_source",
+          "build_recipe"
+        ],
+        "withheld_from_agent": [
+          "head_source",
+          "known_defects",
+          "fix_metadata",
+          "review_comments"
+        ]
+      },
+      "surface": {
+        "files": 1,
+        "changed_lines": 15,
+        "paths": [
+          "src/engine/idTable/CompressedExternalIdTable.h"
+        ]
+      },
+      "known_defects": [
+        {
+          "defect_id": "qlever-2812-async-member-destruction-uaf",
+          "category": "use_after_free",
+          "severity": "high",
+          "difficulty": "high",
+          "location": {
+            "path": "src/engine/idTable/CompressedExternalIdTable.h",
+            "line": 334
+          },
+          "label_source_url": "https://github.com/ad-freiburg/qlever/pull/2812",
+          "label_digest": "c32d10bbf2fa9fb60e4381d90e4c8b635b29cec0134e765d2d24c30974dd21e2"
+        }
+      ]
+    },
+    {
+      "sample_id": "ghidra-ghsa-gqh9-2c72-wpjc",
+      "project_id": "NationalSecurityAgency/ghidra",
+      "repository_url": "https://github.com/NationalSecurityAgency/ghidra",
+      "language": "C++",
+      "partition": "holdout",
+      "public_at": "2026-05-14T17:52:51Z",
+      "pr_url": "https://github.com/NationalSecurityAgency/ghidra/security/advisories/GHSA-gqh9-2c72-wpjc",
+      "base_commit": "bcea8f547f002db8b40b258d67f0ab6850464b44",
+      "head_commit": "4a9b40c453ad0fa71a4d9adda44cc7917affe118",
+      "license": {
+        "spdx": "Apache-2.0",
+        "url": "https://github.com/NationalSecurityAgency/ghidra/blob/4a9b40c453ad0fa71a4d9adda44cc7917affe118/LICENSE",
+        "redistribution": "The pinned primary source files and derived metadata may be redistributed under Apache-2.0 terms with required notices."
+      },
+      "artifact_scope": "primary-defect-file",
+      "artifacts": [
+        {
+          "role": "base_source",
+          "url": "https://raw.githubusercontent.com/NationalSecurityAgency/ghidra/bcea8f547f002db8b40b258d67f0ab6850464b44/Ghidra/Features/Decompiler/src/decompile/cpp/sleigh.cc",
+          "sha256": "e104478fb889fe4174275f75d43d25e20d72b5a9b8c0fb5841a1dd3d5aa0c31d",
+          "size_bytes": 26858
+        },
+        {
+          "role": "head_source",
+          "url": "https://raw.githubusercontent.com/NationalSecurityAgency/ghidra/4a9b40c453ad0fa71a4d9adda44cc7917affe118/Ghidra/Features/Decompiler/src/decompile/cpp/sleigh.cc",
+          "sha256": "2fccfa3a71afb7c44e04946eca57191b3ede7aa30dbf9b4cd9595322bcf8c10e",
+          "size_bytes": 26899
+        }
+      ],
+      "build": {
+        "variant_id": "label-slice-clang14",
+        "commands": [
+          [
+            "make",
+            "-C",
+            "Ghidra/Features/Decompiler/src/decompile/cpp",
+            "sleigh"
+          ]
+        ],
+        "toolchain": {
+          "cxx": "clang++-14",
+          "version": "14.0.0",
+          "make": "4.3"
+        },
+        "recipe_digest": "1f73d0ab9fac08314cecd7230dd3f62c784f58769d100a79580526cfd5078c25",
+        "dependency_digest": "bd384cec6a8065ab32cb676a6eaef7b55d97456eb6222bf6b9ac2651f191574d",
+        "dependency_mode": "upstream-primary-file-slice",
+        "network": "disabled"
+      },
+      "input_policy": {
+        "allowed_to_agent": [
+          "base_source",
+          "build_recipe"
+        ],
+        "withheld_from_agent": [
+          "head_source",
+          "known_defects",
+          "fix_metadata",
+          "review_comments"
+        ]
+      },
+      "surface": {
+        "files": 1,
+        "changed_lines": 12,
+        "paths": [
+          "Ghidra/Features/Decompiler/src/decompile/cpp/sleigh.cc"
+        ]
+      },
+      "known_defects": [
+        {
+          "defect_id": "ghidra-generate-pointer-add-uaf",
+          "category": "use_after_free",
+          "severity": "medium",
+          "difficulty": "high",
+          "location": {
+            "path": "Ghidra/Features/Decompiler/src/decompile/cpp/sleigh.cc",
+            "line": 205
+          },
+          "label_source_url": "https://github.com/NationalSecurityAgency/ghidra/security/advisories/GHSA-gqh9-2c72-wpjc",
+          "label_digest": "7916d0f47c5d2d90609294fbe5bbaf6db0d5dcda2c4c8b1a987d1ead15a367ae"
+        }
+      ]
+    }
+  ]
+}
