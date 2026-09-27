@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "defect-agent-runtime"
+version = "0.2.1"
+description = "Evidence-first runtime foundation for collaborative defect analysis agents"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+license-files = ["LICENSE"]
+dependencies = []
+
+[project.scripts]
+defect-validation-record = "agent_runtime.validation_cli:main"
+
+[project.optional-dependencies]
+claude = ["claude-agent-sdk==0.2.159"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"agent_runtime" = ["py.typed"]
+"agent_runtime.adapters" = ["*.sc", "*.ql"]
