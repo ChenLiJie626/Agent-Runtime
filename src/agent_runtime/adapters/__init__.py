@@ -14,6 +14,15 @@ from .codeql import (
     CodeQLReplayProgramQuery,
 )
 from .compilation_database import ClangCompilationDatabase, CompilationCommand
+from .docker_validation import (
+    DockerAttemptEvidence,
+    DockerOutputArtifact,
+    DockerValidationAttempt,
+    DockerValidationExecutor,
+    DockerValidationLimits,
+    DockerValidationSuite,
+    load_docker_validation_suite,
+)
 from .codechecker import (
     CodeCheckerCtuConfig,
     run_codechecker_ctu_use_after_free_analysis,
@@ -36,6 +45,8 @@ __all__ = [
     "ClangCompilationDatabase", "CompilationCommand",
     "CodeCheckerCtuConfig", "run_codechecker_ctu_use_after_free_analysis",
     "CodeQLCaptureBundle", "CodeQLReplayConfig", "CodeQLReplayProgramQuery",
+    "DockerAttemptEvidence", "DockerOutputArtifact", "DockerValidationAttempt", "DockerValidationExecutor",
+    "DockerValidationLimits", "DockerValidationSuite", "load_docker_validation_suite",
     "JoernConfig", "JoernProgramQuery", "RecordedJoernProgramQuery",
     "RecordedValidationProgramQuery",
     "AnalysisLayer", "IncludeChain", "LayeredCtuPlan", "LayeredCtuPlanner",

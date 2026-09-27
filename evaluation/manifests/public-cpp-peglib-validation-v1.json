@@ -1,0 +1,50 @@
+{
+  "schema": "agent-runtime/public-cpp-peglib-validation/v1",
+  "suite_id": "public-cpp-peglib-validation-v1",
+  "project": "yhirose/cpp-peglib",
+  "license": "MIT",
+  "image_ref": "agent-runtime/clang-ctu@sha256:4f3a6f74ec2dcabbe51d95744a0d6afef145bb09fda347bd5a866fd3dd85eff8",
+  "image_id": "sha256:4f3a6f74ec2dcabbe51d95744a0d6afef145bb09fda347bd5a866fd3dd85eff8",
+  "probe": {
+    "path": "fixtures/public-cpp-peglib/probe.cpp",
+    "size_bytes": 1251,
+    "sha256": "89af5cb897ff44b7ba83c25a9d813c0dab875d0bfb4cecb577fbdfb671bd17ee"
+  },
+  "revisions": [
+    {
+      "revision_id": "base",
+      "commit": "14305f9f53cde207568f21675a1b9294a3ab28b4",
+      "header": {
+        "url": "https://raw.githubusercontent.com/yhirose/cpp-peglib/14305f9f53cde207568f21675a1b9294a3ab28b4/peglib.h",
+        "size_bytes": 125249,
+        "sha256": "e1d6d2328bb1918881e6ceaf1af6500b8c72a041b4c933311be230104cfa8356"
+      },
+      "license_file": {
+        "url": "https://raw.githubusercontent.com/yhirose/cpp-peglib/14305f9f53cde207568f21675a1b9294a3ab28b4/LICENSE",
+        "size_bytes": 1075,
+        "sha256": "424b0ad31870f7f6e1e3129dff2cdb94dfcb0ae069413153fe04f51e04f5a80a"
+      }
+    },
+    {
+      "revision_id": "fix",
+      "commit": "0061f393de54cf0326621c079dc2988336d1ebb3",
+      "header": {
+        "url": "https://raw.githubusercontent.com/yhirose/cpp-peglib/0061f393de54cf0326621c079dc2988336d1ebb3/peglib.h",
+        "size_bytes": 125628,
+        "sha256": "4714897761ee5244cb14f3283cbbf874cba86713bff3226fc2b252da868a8de0"
+      },
+      "license_file": {
+        "url": "https://raw.githubusercontent.com/yhirose/cpp-peglib/0061f393de54cf0326621c079dc2988336d1ebb3/LICENSE",
+        "size_bytes": 1075,
+        "sha256": "424b0ad31870f7f6e1e3129dff2cdb94dfcb0ae069413153fe04f51e04f5a80a"
+      }
+    }
+  ],
+  "inputs": ["ignored", "ordinary"],
+  "observer_id": "cpp-peglib-asan-uaf-v1",
+  "recipe_id": "cpp-peglib-clang21-asan-ubsan-v1",
+  "limitations": [
+    "development-set historical reproduction, not a holdout score",
+    "one fixed probe and two inputs do not establish project safety"
+  ]
+}

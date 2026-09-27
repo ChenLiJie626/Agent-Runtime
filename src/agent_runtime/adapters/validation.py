@@ -3,13 +3,20 @@
 from __future__ import annotations
 
 from collections.abc import Mapping
+from pathlib import Path
 from types import MappingProxyType
 
 from ..codec import bytes_digest
 from ..domain import Coverage, FixedSnapshot, QueryRequest
 from ..errors import InvalidInput, PolicyDenied, StaleSnapshot
 from ..ports import ProgramResult, QueryOperation
-from ..validation import ValidationRecord, load_validation_record, validation_record_bytes
+from ..validation import (
+    ValidationRecord,
+    load_validation_record,
+    validation_evidence_bundle_bytes,
+    validation_record_bytes,
+    verify_artifact_root,
+)
 
 
 class RecordedValidationProgramQuery:
@@ -26,10 +33,21 @@ class RecordedValidationProgramQuery:
         ),
     }
 
-    def __init__(self, snapshot: FixedSnapshot, registry: Mapping[str, ValidationRecord]) -> None:
+    def __init__(
+        self,
+        snapshot: FixedSnapshot,
+        registry: Mapping[str, ValidationRecord],
+        artifact_root: str | Path | None = None,
+    ) -> None:
         if not isinstance(registry, Mapping) or not registry:
             raise InvalidInput("recorded validation registry must be nonempty")
         verified: dict[str, ValidationRecord] = {}
+        root_path = Path(artifact_root) if artifact_root is not None else None
+        if root_path is not None and root_path.is_symlink():
+            raise InvalidInput("validation artifact root must not be a symlink")
+        root = root_path.resolve(strict=True) if root_path is not None else None
+        if root is not None and not root.is_dir():
+            raise InvalidInput("validation artifact root must be a directory")
         for key, record in registry.items():
             if not isinstance(key, str) or not isinstance(record, ValidationRecord):
                 raise InvalidInput("recorded validation registry is malformed")
@@ -39,9 +57,14 @@ class RecordedValidationProgramQuery:
             if key != sealed.record_id:
                 raise InvalidInput("validation registry key must equal record ID")
             self._verify_snapshot_binding(snapshot, sealed)
+            if sealed.schema_version == (1, 1):
+                if root is None:
+                    raise InvalidInput("schema 1.1 validation requires an artifact root")
+                verify_artifact_root(sealed, root)
             verified[key] = sealed
         self.snapshot = snapshot
         self.registry = MappingProxyType(verified)
+        self.artifact_root = root
 
     @staticmethod
     def _verify_snapshot_binding(snapshot: FixedSnapshot, record: ValidationRecord) -> None:
@@ -81,13 +104,38 @@ class RecordedValidationProgramQuery:
         # Revalidate on every use, protecting against an application retaining a
         # reference to a record object with an invalid externally supplied ID.
         record = load_validation_record(validation_record_bytes(record))
-        raw = validation_record_bytes(record)
+        if record.schema_version == (1, 1):
+            if self.artifact_root is None:
+                raise InvalidInput("schema 1.1 validation requires an artifact root")
+            raw = validation_evidence_bundle_bytes(record, self.artifact_root)
+        else:
+            raw = validation_record_bytes(record)
         raw_digest = bytes_digest(raw)
         return self._result(record, raw, raw_digest)
 
     @staticmethod
     def _result(record: ValidationRecord, raw: bytes, raw_digest: str) -> ProgramResult:
         base_limitations = tuple(record.limitations)
+        if record.schema_version == (1, 1):
+            isolation = record.isolation
+            build_term = record.build.termination
+            execution_term = record.execution.termination
+            if isolation is None or isolation.status != "passed":
+                return ProgramResult(
+                    "failed", Coverage("recorded validation attempt", "failed isolation", "unknown"), raw,
+                    base_limitations + ("validation isolation did not pass",),
+                )
+            failure_terms = {"output_limit", "oom", "launch_failed", "cleanup_failed"}
+            if build_term.kind in failure_terms or execution_term.kind in failure_terms:
+                return ProgramResult(
+                    "failed", Coverage("recorded validation attempt", "failed execution", "unknown"), raw,
+                    base_limitations + ("recorded validation exceeded or failed an execution boundary",),
+                )
+            if build_term.kind == "timeout" or execution_term.kind == "timeout":
+                return ProgramResult(
+                    "timeout", Coverage("recorded validation attempt", "timed out execution", "unknown"), raw,
+                    base_limitations + ("timeout cannot establish a definitive validation conclusion",),
+                )
         if record.build.status == "failed" or record.execution.status == "executor_failed":
             return ProgramResult(
                 "failed", Coverage("recorded validation attempt", "failed execution", "unknown"), raw,

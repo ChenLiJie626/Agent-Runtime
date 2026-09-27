@@ -82,6 +82,7 @@ def request(snapshot: FixedSnapshot, record_id: str, **changes) -> QueryRequest:
 
 def test_record_id_is_canonical_and_parser_rejects_tampering_and_execution_fields():
     record = make_record()
+    assert record.record_id == "b0df7d989b3add34d1b24c3b1a0b3631cefa1a55f8a59646b7ea6dfb5f3144eb"
     encoded = validation_record_to_dict(record)
     assert load_validation_record(encoded) == record
     tampered = copy.deepcopy(encoded)
