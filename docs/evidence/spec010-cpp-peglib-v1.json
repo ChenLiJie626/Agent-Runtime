@@ -1,0 +1,132 @@
+{
+  "cases": [
+    {
+      "candidate_digest": "5c51bc740f89cb89f11be20959018168750db560014747c6c3cc0b48f2ea1775",
+      "case": "base/ignored",
+      "classification": "ast_optimizer_invalid_access",
+      "commit": "14305f9f53cde207568f21675a1b9294a3ab28b4",
+      "exit_code": 1,
+      "matched_target_observation": true,
+      "polarity": "positive",
+      "query_status": "complete",
+      "record_id": "0386000b63fe4319458c5bc164acae20dc5bab65dd3ce151ff663a72d3d59017",
+      "runtime_artifact_digest": "579ceeff8738950d799502ecdb6602deedc879230a1a2c19281a4bbb877ab03f",
+      "stderr_sha256": "7f8b44e3eb861ca80c367ebf1d2b7b07daa74e228936f8b14269f5b92f6d360e",
+      "termination": "exit",
+      "verdict": "confirmed"
+    },
+    {
+      "candidate_digest": "0c0611707f732911a1d623f8895c6316ccfa877f8106efad800bc06b86c87cf7",
+      "case": "base/ordinary",
+      "classification": "optimized_completed",
+      "commit": "14305f9f53cde207568f21675a1b9294a3ab28b4",
+      "exit_code": 0,
+      "matched_target_observation": true,
+      "polarity": "negative",
+      "query_status": "complete",
+      "record_id": "021bb757f7879f885e4a54dfb895fb395dcd2dff19a51ff288ca8d9af2ec05c0",
+      "runtime_artifact_digest": "528f91f90ea9872aeed595fb1144da8fb41e120ea70d5b31d433b99f84e9d43c",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "termination": "exit",
+      "verdict": "refuted"
+    },
+    {
+      "candidate_digest": "a95b1ac09e0bfab45c2d2dd1259d9859d512e0c87c183a5fd4c4f8b026023b25",
+      "case": "fix/ignored",
+      "classification": "no_matching_observation",
+      "commit": "0061f393de54cf0326621c079dc2988336d1ebb3",
+      "exit_code": 0,
+      "matched_target_observation": false,
+      "polarity": "unknown",
+      "query_status": "partial",
+      "record_id": "f1f75543ad4c5e595ef994953f4f1ce2d2ed7293e06faf066b6a283ba244f045",
+      "runtime_artifact_digest": "0056da6e55f9046efa25576758810f7d44fa0be10bb68e970a6eabc6fbded733",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "termination": "exit",
+      "verdict": "inconclusive"
+    },
+    {
+      "candidate_digest": "87285c52a67a0af7c936130c4efba06dbe409af9ddd61153df0d710eb9261a8e",
+      "case": "fix/ordinary",
+      "classification": "optimized_completed",
+      "commit": "0061f393de54cf0326621c079dc2988336d1ebb3",
+      "exit_code": 0,
+      "matched_target_observation": true,
+      "polarity": "negative",
+      "query_status": "complete",
+      "record_id": "2354bf660b4182c07ef478ff4e24643c10f5ef613f431275b0204728cc96563f",
+      "runtime_artifact_digest": "a9ddc9e01a06f384f6151a39a49bc6b84bd6d708a191d92c5ea47b8589d48ec2",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "termination": "exit",
+      "verdict": "refuted"
+    }
+  ],
+  "image_ref": "agent-runtime/clang-ctu@sha256:4f3a6f74ec2dcabbe51d95744a0d6afef145bb09fda347bd5a866fd3dd85eff8",
+  "limitations": [
+    "all conclusions are scoped to the recorded revision, input, and fixed configuration",
+    "development-set historical reproduction, not a holdout score",
+    "no-trigger and failed execution remain inconclusive and cannot create exclusions",
+    "one fixed probe and two inputs do not establish project safety"
+  ],
+  "observer_id": "cpp-peglib-asan-uaf-v1",
+  "positive_observation": {
+    "asan_type": "SEGV on unknown address",
+    "case": "base/ignored",
+    "parsed_phase_reached": true,
+    "same_asan_block_numbered_frame": "peglib.h:3650:32",
+    "ubsan_locations": [
+      "peglib.h:3647:59",
+      "peglib.h:3650:26"
+    ]
+  },
+  "probe": {
+    "path": "fixtures/public-cpp-peglib/probe.cpp",
+    "sha256": "89af5cb897ff44b7ba83c25a9d813c0dab875d0bfb4cecb577fbdfb671bd17ee",
+    "size_bytes": 1251
+  },
+  "project": "yhirose/cpp-peglib",
+  "recipe_id": "cpp-peglib-clang21-asan-ubsan-v1",
+  "revisions": [
+    {
+      "commit": "14305f9f53cde207568f21675a1b9294a3ab28b4",
+      "header_sha256": "e1d6d2328bb1918881e6ceaf1af6500b8c72a041b4c933311be230104cfa8356",
+      "header_size_bytes": 125249,
+      "revision_id": "base"
+    },
+    {
+      "commit": "0061f393de54cf0326621c079dc2988336d1ebb3",
+      "header_sha256": "4714897761ee5244cb14f3283cbbf874cba86713bff3226fc2b252da868a8de0",
+      "header_size_bytes": 125628,
+      "revision_id": "fix"
+    }
+  ],
+  "run_report_sha256": "c14bf77c27f1dc146ac94e8fccb6337df2f04fd81445eb5df5fd11c545954a13",
+  "runtime_acceptance": {
+    "exact_exclusion_reused_after_reopen": true,
+    "external_artifact_tamper_rejected": true,
+    "identity_field_non_reuse": {
+      "input_digest": true,
+      "observer_contract": true,
+      "recipe_digest": true,
+      "record_id": true,
+      "revision_id": true,
+      "source_digest": true,
+      "toolchain_digest": true
+    },
+    "runtime_bundle_tamper_rejected": true,
+    "verdict_counts": {
+      "confirmed": 1,
+      "inconclusive": 1,
+      "refuted": 2
+    }
+  },
+  "runtime_report_sha256": "a97f3b2a38697c21fb4513e18754ef9f20a6a5100197d946a762c492d3334c80",
+  "schema": "agent-runtime/spec010-cpp-peglib-evidence-summary/v1",
+  "shared_configuration": {
+    "policy": true,
+    "recipe": true,
+    "toolchain": true
+  },
+  "status": "passed",
+  "suite_id": "public-cpp-peglib-validation-v1"
+}

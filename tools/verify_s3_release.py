@@ -1,4 +1,4 @@
-"""Verify the 0.2.1 wheel from an isolated environment outside the checkout."""
+"""Verify the 0.3.0 wheel from an isolated environment outside the checkout."""
 
 from __future__ import annotations
 
@@ -14,7 +14,7 @@ import zipfile
 from pathlib import Path
 
 
-VERSION = "0.2.1"
+VERSION = "0.3.0"
 LIFETIME_CONSTANTS = {
     "ASYNC_MEMBER_DESTRUCTION_RULE",
     "CONTAINER_INVALIDATION_RULE",
@@ -50,7 +50,9 @@ def run(
         required = {
             "agent_runtime/py.typed",
             "agent_runtime/adapters/joern_query.sc",
-            "agent_runtime/adapters/codeql_lifetime_candidates.ql",
+            "agent_runtime/adapters/codeql_pack/PotentialAccessAfterDelete.ql",
+            "agent_runtime/adapters/codeql_pack/qlpack.yml",
+            "agent_runtime/adapters/codeql_pack/codeql-pack.lock.yml",
         }
         if required - members:
             raise RuntimeError(f"wheel misses package files: {required - members}")
@@ -89,7 +91,8 @@ def run(
         source_members = {name.rsplit("/", 1)[-1] for name in names}
         if not {
             "pyproject.toml", "README.md", "py.typed", "LICENSE",
-            "joern_query.sc", "codeql_lifetime_candidates.ql",
+            "joern_query.sc", "PotentialAccessAfterDelete.ql",
+            "qlpack.yml", "codeql-pack.lock.yml",
         }.issubset(source_members):
             raise RuntimeError("sdist misses release sources or packaged queries")
         sdist_license = next(
@@ -138,11 +141,13 @@ import json, sys
 import agent_runtime as runtime
 from agent_runtime import (
     ValidationArtifact, ValidationBuildOutcome, ValidationExecutionOutcome,
-    ValidationRecord, ValidationResource, validation_record_to_dict,
+    ValidationIsolationOutcome, ValidationRecord, ValidationResource,
+    ValidationTermination, validation_evidence_bundle_bytes,
+    validation_record_to_dict,
 )
 from agent_runtime.adapters import (
-    CodeQLReplayProgramQuery, RecordedJoernProgramQuery,
-    RecordedValidationProgramQuery,
+    CodeQLReplayProgramQuery, DockerValidationExecutor,
+    RecordedJoernProgramQuery, RecordedValidationProgramQuery,
 )
 
 def artifact(value):
@@ -158,7 +163,10 @@ record = ValidationRecord(
 )
 with open(sys.argv[1], "w", encoding="utf-8") as output:
     json.dump(validation_record_to_dict(record), output)
-query = resources.files("agent_runtime.adapters").joinpath("codeql_lifetime_candidates.ql")
+pack = resources.files("agent_runtime.adapters").joinpath("codeql_pack")
+query = pack.joinpath("PotentialAccessAfterDelete.ql")
+qlpack = pack.joinpath("qlpack.yml")
+lock = pack.joinpath("codeql-pack.lock.yml")
 print(json.dumps({
     "version": metadata.version("defect-agent-runtime"),
     "license": metadata.metadata("defect-agent-runtime").get("License-Expression"),
@@ -170,7 +178,15 @@ print(json.dumps({
     "legacy_joern": RecordedJoernProgramQuery.__name__,
     "validation_adapter": RecordedValidationProgramQuery.__name__,
     "codeql_adapter": CodeQLReplayProgramQuery.__name__,
-    "ql_packaged": query.is_file() and bool(query.read_text(encoding="utf-8")),
+    "docker_adapter": DockerValidationExecutor.__name__,
+    "validation_v11_exports": [
+        ValidationIsolationOutcome.__name__, ValidationTermination.__name__,
+        validation_evidence_bundle_bytes.__name__,
+    ],
+    "ql_packaged": all(
+        item.is_file() and bool(item.read_text(encoding="utf-8"))
+        for item in (query, qlpack, lock)
+    ),
     "record_id": record.record_id,
 }))
 '''
@@ -217,6 +233,11 @@ print(json.dumps({
                 or installed["legacy_joern"] != "RecordedJoernProgramQuery"
                 or installed["validation_adapter"] != "RecordedValidationProgramQuery"
                 or installed["codeql_adapter"] != "CodeQLReplayProgramQuery"
+                or installed["docker_adapter"] != "DockerValidationExecutor"
+                or installed["validation_v11_exports"] != [
+                    "ValidationIsolationOutcome", "ValidationTermination",
+                    "validation_evidence_bundle_bytes",
+                ]
                 or not installed["ql_packaged"]
                 or validate_result.stdout.strip() != installed["record_id"]
                 or inspected.get("record_id") != installed["record_id"]
@@ -235,7 +256,12 @@ print(json.dumps({
             "installed_outside_checkout": True,
             "core_import_without_claude": True,
             "public_exports": "passed",
-            "package_queries": {"joern": "present", "codeql": "present"},
+            "package_queries": {"joern": "present", "codeql_pack": "present"},
+            "validation_schema": {
+                "v1_0_compatible": True,
+                "v1_1_exports": installed["validation_v11_exports"],
+                "docker_executor_export": installed["docker_adapter"],
+            },
             "validation_cli": {
                 "status": "passed",
                 "validate": "passed",

@@ -1,0 +1,71 @@
+{
+  "consumer": {
+    "backends": [
+      "external.symbols",
+      "external.manifest"
+    ],
+    "exclusion_reused": true,
+    "package": "defect-agent-runtime",
+    "reopened_reports": 2,
+    "report_schema": {
+      "major": 1,
+      "minor": 1
+    },
+    "rules": [
+      "external.symbol-presence",
+      "external.manifest-policy"
+    ],
+    "status": "passed",
+    "verdicts": [
+      "confirmed",
+      "refuted"
+    ]
+  },
+  "core_import_without_claude": true,
+  "cpp_pipeline": {
+    "blockers": [
+      "roles report unresolved items",
+      "semantic_validation lacks complete scoped coverage"
+    ],
+    "candidate_status": "inconclusive",
+    "status": "passed"
+  },
+  "installed_outside_checkout": true,
+  "license": "MIT",
+  "package_queries": {
+    "codeql_pack": "present",
+    "joern": "present"
+  },
+  "public_exports": "passed",
+  "regression": {
+    "compileall": "passed",
+    "pytest": {
+      "passed": 203,
+      "skipped": 3
+    },
+    "unittest": {
+      "passed": 172,
+      "skipped": 3
+    }
+  },
+  "sdist": "defect_agent_runtime-0.3.0.tar.gz",
+  "status": "passed",
+  "validation_cli": {
+    "execution_subcommand_absent": true,
+    "forbidden_argv_rejected": true,
+    "inspect": "passed",
+    "status": "passed",
+    "validate": "passed"
+  },
+  "validation_schema": {
+    "docker_executor_export": "DockerValidationExecutor",
+    "v1_0_compatible": true,
+    "v1_1_exports": [
+      "ValidationIsolationOutcome",
+      "ValidationTermination",
+      "validation_evidence_bundle_bytes"
+    ]
+  },
+  "version": "0.3.0",
+  "wheel": "defect_agent_runtime-0.3.0-py3-none-any.whl"
+}

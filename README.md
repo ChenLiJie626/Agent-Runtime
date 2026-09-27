@@ -1,6 +1,6 @@
 # agent-runtime
 
-面向程序缺陷挖掘的可扩展 Python 基础包。架构为 **Claude Agent SDK 适配器 + 本包领域控制层**。当前本地发行线为 `0.2.1`：[S2](docs/07-S2-基础能力验收记录.md) 的 13 项基础能力门禁与 [S3](specs/007-release-and-extension.md) 的发行验收均已通过。项目采用 [MIT 许可证](LICENSE)，尚未发布到包索引。
+面向程序缺陷挖掘的可扩展 Python 基础包。架构为 **Claude Agent SDK 适配器 + 本包领域控制层**。当前本地发行线为 `0.3.0`：[S2](docs/07-S2-基础能力验收记录.md) 的 13 项基础能力门禁与 [S3](specs/007-release-and-extension.md) 的发行验收均已通过。项目采用 [MIT 许可证](LICENSE)，尚未发布到包索引。
 
 ## 安装与验证
 
@@ -14,10 +14,10 @@ python -m unittest discover -s tests -v
 第三方接入可先运行[完整样例](examples/external_consumer.py)：它从公开入口注册两条抽象规则、两个只读查询后端和一个角色执行器。样例用固定材料验证扩展流程，不代表真实缺陷检出率。构建 wheel 后，用[发行验证器](tools/verify_s3_release.py)在仓库外安装并运行它：
 
 ```bash
-uv build --offline --out-dir dist/s3
+uv build --offline --out-dir dist/spec010
 .venv/bin/python tools/verify_s3_release.py \
-  --wheel dist/s3/defect_agent_runtime-0.2.1-py3-none-any.whl \
-  --sdist dist/s3/defect_agent_runtime-0.2.1.tar.gz
+  --wheel dist/spec010/defect_agent_runtime-0.3.0-py3-none-any.whl \
+  --sdist dist/spec010/defect_agent_runtime-0.3.0.tar.gz
 ```
 
 应用从 `agent_runtime` 导入 `RuleSpec`、`FixedSnapshot`、`CandidateIdentity`、`ProgramQuery`、`RuleEvaluator`、`AgentExecutor`、`SQLiteStore`、`DefectRuntime` 和 `RoleCoordinator`。先定义规则与后端，再创建分析/候选、保存查询证据和检查状态，最后运行独立角色并读取报告。详细调用顺序和版本约束见[S3 接入文档](docs/08-S3-发布与兼容.md)。`InvalidInput`、`Conflict`、`CapabilityUnavailable`、`PolicyDenied`、`StaleSnapshot`、`EvidenceIntegrityError`、`SessionUnavailable`、`BackendFailure` 和 `StorageFailure` 是公开失败分类；异常文本不作兼容承诺。
@@ -46,8 +46,8 @@ Claude SDK 使用 `setting_sources=[]` 隔离用户与目标仓库设置。若�
 | 角色协同；Claude SDK 可选执行适配器 | Profile 可配置调查、按缺口触发的专项角色和独立验证；各角色独立 Session、查询授权及 Note 交接通过确定性测试。包入口的真实 SDK 合成规则联调取得两个独立会话与结构化角色产物，未知项保守裁为 `inconclusive`。 |
 | 真实 C++ 夹具与 Clang 基线 | SPEC 005 双提交、同配置编译数据库和原始 SARIF 已生成；Clang 零告警不作为安全证明。 |
 | 可复用分析流水线 | `AnalysisPipeline` 已将候选发现、Evidence 查询、事实/检查落库、独立角色和规则裁决组合为公开 API；内置 `CppUnreachableDiscoverer`、`CppUnreachableEvaluator`、`EvidenceReviewExecutor`、`CompositeProgramQuery` 与 recorded-Joern 后端，第三方可逐项替换。 |
-| 通用动态验证记录 | `ValidationRecord` 使用封闭 schema 绑定源码、策略、工具链、依赖、配方、输入、产物、资源与执行结果；`RecordedValidationProgramQuery` 只按已注册 ID 回放，`defect-validation-record` 只校验/检查记录，不执行命令。 |
-| Portfolio、证据规划与 CodeQL replay | `PortfolioDiscoverer` 按 candidate digest 精确融合并持久保存全部来源；Pipeline 可选受限自适应 planner，默认仍为 eager；CodeQL 后端只运行包内固定查询和预建数据库，输出仅是候选 signal，空结果或失败不作负证据。相关新增指标为 non-gating。 |
+| 通用动态验证记录 | `ValidationRecord` 1.1 在兼容 1.0 record ID 的同时绑定 isolation、termination 与资源观测 artifact；`RecordedValidationProgramQuery` 逐次重验全部原文并保存完整 evidence bundle，`defect-validation-record` 仍只校验/检查记录，不执行命令。 |
+| 隔离执行、Portfolio、证据规划与 CodeQL replay | registry-only Docker executor 固定禁网、只读根、非 root、drop capabilities 和资源上限；`PortfolioDiscoverer` 按 candidate digest 融合来源；CodeQL 后端只运行包内固定 query pack 和预建数据库，输出仅是候选 signal，空结果或失败不作负证据。 |
 | C++ use after free 规则 | 已内置 Clang Static Analyzer 捕获、`compile_commands.json` 安全重放、CodeChecker/Clang CTU 隔离适配器、`ClangUseAfterFreeDiscoverer`、只读诊断查询后端和 `CppUseAfterFreeEvaluator`；随附最小、跨类及真实跨翻译单元夹具。 |
 | Joern 固定查询与受限 ProgramQuery | 已对 SPEC 005 两侧建图；`JoernProgramQuery` 支持 `get_function/find_callers/get_guards/map_arguments/trace_value/check_reachability`，真实原文已通过运行时保存为部分覆盖 Evidence；F-05 构建差异和真实超时已联测；超时不产生 EvidenceRef。完整条件路径尚不能证明。 |
 | SPEC 008 评测契约 | 已实现公开 C++ 数据 manifest 校验、固定下载摘要核验、隔离容器构建记录、运行结果完整性检查、分阶段指标/分层/项目级不确定性报告、预注册门禁和 no-findings 负对照。UAF seed 集包含 QLever 4 个 ASan UAF 和 Ghidra 1 个 CWE-416；旧项目级 CTU 原始结果按新口径为候选/确认召回下界 0/5、可评估样本召回 0/1，QLever 的 4 个样本因 141 个 TU 的 ASTImporter 执行失败单列为不可评估，不再伪装成真实漏报。 |
@@ -56,9 +56,11 @@ Claude SDK 使用 `setting_sources=[]` 隔离用户与目标仓库设置。若�
 
 公开入口在 `src/agent_runtime/__init__.py`；应用注入 `ProgramQuery`、`AgentExecutor`、规则身份策略与 `RuleEvaluator`。`DefectRuntime` 保持 SDK 独立；Agent 输出形成 Claim、SpecialistNote 或 Assessment，确定结论仍需已保存证据及规则评价器。合成测试不代表真实缺陷发现准确率。
 
-0.2.1 的新增能力保持保守边界：validation replay 的 `complete` 只覆盖一个已绑定输入和观测，CodeQL fixture 测试只验证适配器与规范化机制。SPEC 010 的隔离执行器、cpp-peglib 真实基线/修复复现，以及真实 CodeQL 数据库上的质量收益尚未闭合，不能由 mock、空 SARIF 或成功退出推断。
+0.3.0 闭合了 [SPEC 010](specs/010-reproducible-validation-evidence.md)：当前 runner digest 下 VE-02 六个 Docker self-test 全部通过；cpp-peglib base/fix × ignored/ordinary 四象限生成真实 schema 1.1 records，并在 Runtime 中得到 **1 confirmed、2 scoped refuted、1 inconclusive**；SQLite 重开 exact exclusion、identity 分离和两类 artifact tamper 均通过。`complete/refuted` 始终只覆盖已绑定 revision/input/configuration，no-trigger、timeout、OOM、output-limit 和执行失败不作安全结论。摘要见 [`spec010-isolation-v1.json`](docs/evidence/spec010-isolation-v1.json)与[`spec010-cpp-peglib-v1.json`](docs/evidence/spec010-cpp-peglib-v1.json)。
 
-0.2.1 本地发行门禁（2026-09-27）已通过：`pytest` **179 passed, 3 skipped**，`unittest` 兼容发现 **170 tests, 3 skipped**，`compileall` 通过；wheel/sdist 已离线构建，并在 checkout 外的干净虚拟环境完成公开导入、旧 `RecordedJoernProgramQuery` 兼容、六类生命周期常量、`.ql/.sc` 包资源、validation CLI `validate|inspect` 及禁止 `argv`/执行子命令的验收。验收记录为 [`docs/evidence/s3-release-0.2.1.json`](docs/evidence/s3-release-0.2.1.json)。宿主未安装 CodeQL CLI，真实 `.ql` 编译与预建数据库 replay 明确跳过；本门禁因此不构成真实 CodeQL 检测率证据。
+官方 CodeQL 2.27.1 已完成固定 query compile、四个真实 C++ database、每案例双跑 analyze 及 positive result replay。positive fixture 在 `positive.cpp:6:10-14` 产生 1 个稳定候选；nearby control 与 cpp-peglib base/fix 的零结果均保持 `partial`，不解释为安全、missed 或检测率。CodeQL CLI、QLX、database、SARIF 和 raw evidence 均不进入包；摘要见 [`codeql-v2.27.1-live-v1.json`](docs/evidence/codeql-v2.27.1-live-v1.json)。
+
+0.3.0 本地发行门禁（2026-09-27）已通过：`pytest` **203 passed, 3 skipped**，`unittest` 兼容发现 **172 tests, 3 skipped**，`compileall` 通过；wheel/sdist 离线构建完成，并在 checkout 外干净虚拟环境验证公开导出、1.0 record 兼容、1.1 新导出、Docker adapter、旧 `RecordedJoernProgramQuery`、CodeQL query pack/lock、validation CLI 只读边界与外部消费者样例。验收记录为 [`docs/evidence/s3-release-0.3.0.json`](docs/evidence/s3-release-0.3.0.json)。本地通过不等于已发布到包索引。
 
 ## 规格与文档
 
@@ -83,8 +85,9 @@ Claude SDK 使用 `setting_sources=[]` 隔离用户与目标仓库设置。若�
 17. [S3 验收记录](docs/09-S3-验收记录.md)：S3-01 至 S3-06 的验收证据与发行状态。
 18. [SPEC 008](specs/008-defect-quality-evaluation.md)：S4 的盲评数据、分阶段质量指标、改进流水线与放行门禁。
 19. [S4 质量评测实施记录](docs/10-S4-质量评测实施记录.md)：公开 C++ 冻结清单、Q-01/Q-02 可执行契约、负对照报告及剩余门禁。
+20. [SPEC 010](specs/010-reproducible-validation-evidence.md)：可复现动态验证记录、隔离执行、cpp-peglib 四象限和固定 CodeQL replay。
 
-S4 已开始：当前已跑通[SPEC 008](specs/008-defect-quality-evaluation.md)的 Q-01/Q-02/Q-03/Q-07 首版机制、公开 C++ 负对照、隔离构建记录和 build-aware partial Evidence 回放。Q-04 仍需成功构建、规则 Oracle 与近邻反例。`0.2.1` 的本地构建和验证不等于公开发布。
+S4 已开始：当前已跑通[SPEC 008](specs/008-defect-quality-evaluation.md)的 Q-01/Q-02/Q-03/Q-07 首版机制、公开 C++ 负对照、隔离构建记录和 build-aware partial Evidence 回放。Q-04 仍需成功构建、规则 Oracle 与近邻反例。`0.3.0` 的本地构建和验证不等于公开发布。
 
 ## S4 质量评测
 

@@ -1,0 +1,98 @@
+{
+  "canonical_database_unchanged": true,
+  "cases": [
+    {
+      "case": "positive",
+      "database_file_count": 185,
+      "database_manifest_digest": "fb8beeffc508bde54bd719a1e04425c0cec25726c8685b50299a91eeafdb6b76",
+      "fingerprints_stable": true,
+      "result_count": 1,
+      "results": [
+        {
+          "fingerprints": [
+            {
+              "name": "primaryLocationLineHash",
+              "value": "f6aa8a78f0ae81b2:1"
+            },
+            {
+              "name": "primaryLocationStartColumnFingerprint",
+              "value": "7"
+            }
+          ],
+          "message": "Pointer is accessed after a delete expression in the same function; inspect lifetime and control flow.",
+          "region": {
+            "end_column": 14,
+            "end_line": 6,
+            "start_column": 10,
+            "start_line": 6
+          },
+          "result_id": "62eb5f21d22905ccc7396972bb2af1f9c1492a1c008d8e73da6b659b2b30ee55",
+          "rule_id": "cpp/potential-access-after-delete-candidate",
+          "uri": "positive.cpp"
+        }
+      ],
+      "source_manifest_digest": "8e221f68c8dd730c519a181b0b3ba2f1dabf6d404d9aed986984dea52661f22a",
+      "status": "complete"
+    },
+    {
+      "case": "control",
+      "database_file_count": 185,
+      "database_manifest_digest": "5e3c928c3a5c16f1faf50fbd5208203c548285444a1b0e5f41765cb3deeafa07",
+      "fingerprints_stable": true,
+      "result_count": 0,
+      "results": [],
+      "source_manifest_digest": "e5afc9716ae6aeb81c976c09e0faead1b9f61dfbddde4f685c5d4048b27e89ea",
+      "status": "partial"
+    },
+    {
+      "case": "base",
+      "database_file_count": 429,
+      "database_manifest_digest": "b5528d0e875d7785e15197d2e2a80343c661ede83951dbddef672fbf8f938603",
+      "fingerprints_stable": true,
+      "result_count": 0,
+      "results": [],
+      "source_manifest_digest": "e2146933a88c7d442c952b8285fb340f155dde9e64bad2d458de77d53bd28098",
+      "status": "partial"
+    },
+    {
+      "case": "fix",
+      "database_file_count": 429,
+      "database_manifest_digest": "024f813c866b70c94ab6714aecb55dbe88cfd732b061fd59f5a8a31de03c97a8",
+      "fingerprints_stable": true,
+      "result_count": 0,
+      "results": [],
+      "source_manifest_digest": "785245484e87b1e277f836d14822d5131c126e68d968db7828b852979e699e8b",
+      "status": "partial"
+    }
+  ],
+  "double_analysis": true,
+  "limitations": [
+    "fixture positive demonstrates one fixed candidate query, not a defect verdict or detection-rate estimate",
+    "empty public-source or control results remain partial and do not establish safety or a miss"
+  ],
+  "query": {
+    "compile_stderr_sha256": "14698fad974423b131d4de42119121e9f9560ddac6c1987124143348a3970f52",
+    "compile_stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "lock_sha256": "5af1ed48732ec612914ce6a4911bf801419883ce72b9e6133a6871131aee696b",
+    "pack_digest": "7c05170fbb761bb6f2bd2d7a271bb2d9032cb07044da2696606386050b4f63ee",
+    "qlx_sha256": "0bf7f6100c8034994cbe44a45207b8a486c8d0e6a77a429485322c08ea94cc03",
+    "query_sha256": "1f6c384e67da5bacae3edd9d100a4d8244a20336289b5cdbfbb370dee528bbdf",
+    "rule_id": "cpp/potential-access-after-delete-candidate"
+  },
+  "replay": [
+    {
+      "evidence_sha256": "7421c798f4ded4081a2e6df5979a63d8964431ae9fdb6eb0e41a37e80539c68c",
+      "result_id": "62eb5f21d22905ccc7396972bb2af1f9c1492a1c008d8e73da6b659b2b30ee55",
+      "status": "complete"
+    }
+  ],
+  "report_sha256": "114cbab3e51b48b1e3d79201d889a30d5b3558382a35f1aeb2643cc4307751ce",
+  "schema": "agent-runtime/codeql-live-acceptance/v1",
+  "status": "passed",
+  "toolchain": {
+    "archive_sha256": "b63286d8189b90f6045a18797d191603f611f0003216783cade7166ec80ada45",
+    "cli_sha256": "5010324098d11f9e2d34e0fcf53bb44e40e8e3ffc8aecefe695269b54edaa413",
+    "release": "codeql-bundle-v2.27.1",
+    "tree_manifest_digest": "bfb92727a9c57df5549afce544d6acce9dd82a6280706032eac2aafc41647169"
+  }
+}

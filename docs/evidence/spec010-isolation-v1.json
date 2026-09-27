@@ -1,0 +1,348 @@
+{
+  "attempt_count": 6,
+  "attempts": [
+    {
+      "attempt_id": "normal",
+      "cleanup_succeeded": true,
+      "exit_code": 0,
+      "isolation_status": "passed",
+      "probe_report_sha256": "ec69050b29e70a0ff8dd195bce6bc4ca65217e53de6a80de8ef15b5ae24ca59f",
+      "resource_observation_sha256": "679e5c1c22ed2664aa2a61894e305646da7a90f3ecf6ed63312bc2df9ce71c5c",
+      "resources": [
+        {
+          "kind": "wall_time_ms",
+          "limit": 750,
+          "observation_status": "observed",
+          "observed": 112
+        },
+        {
+          "kind": "cpu_time_usec",
+          "limit": 750000,
+          "observation_status": "observed",
+          "observed": 31047
+        },
+        {
+          "kind": "memory_peak_bytes",
+          "limit": 268435456,
+          "observation_status": "observed",
+          "observed": 6955008
+        },
+        {
+          "kind": "pids_peak",
+          "limit": 32,
+          "observation_status": "observed",
+          "observed": 6
+        },
+        {
+          "kind": "stdout_bytes",
+          "limit": 32768,
+          "observation_status": "observed",
+          "observed": 181
+        },
+        {
+          "kind": "stderr_bytes",
+          "limit": 32768,
+          "observation_status": "observed",
+          "observed": 0
+        },
+        {
+          "kind": "writable_bytes",
+          "limit": 1048576,
+          "observation_status": "observed",
+          "observed": 0
+        }
+      ],
+      "runtime_report_sha256": "3215a890b93e359261db6a8be6baea4c6d356e53a4bb4a9b00d519e208b82d8c",
+      "signal": null,
+      "termination": "exit"
+    },
+    {
+      "attempt_id": "nonzero",
+      "cleanup_succeeded": true,
+      "exit_code": 23,
+      "isolation_status": "passed",
+      "probe_report_sha256": "f5d84ce25e215c9831e1485d0f41602fcefeaee8fdcccf0416d972f1aba70a21",
+      "resource_observation_sha256": "c447871c5a7f36aedd736a447068a4f806644aa3dc0556b97baf73bf86f27742",
+      "resources": [
+        {
+          "kind": "wall_time_ms",
+          "limit": 750,
+          "observation_status": "observed",
+          "observed": 108
+        },
+        {
+          "kind": "cpu_time_usec",
+          "limit": 750000,
+          "observation_status": "observed",
+          "observed": 38730
+        },
+        {
+          "kind": "memory_peak_bytes",
+          "limit": 268435456,
+          "observation_status": "observed",
+          "observed": 6905856
+        },
+        {
+          "kind": "pids_peak",
+          "limit": 32,
+          "observation_status": "observed",
+          "observed": 6
+        },
+        {
+          "kind": "stdout_bytes",
+          "limit": 32768,
+          "observation_status": "observed",
+          "observed": 182
+        },
+        {
+          "kind": "stderr_bytes",
+          "limit": 32768,
+          "observation_status": "observed",
+          "observed": 0
+        },
+        {
+          "kind": "writable_bytes",
+          "limit": 1048576,
+          "observation_status": "observed",
+          "observed": 0
+        }
+      ],
+      "runtime_report_sha256": "3215a890b93e359261db6a8be6baea4c6d356e53a4bb4a9b00d519e208b82d8c",
+      "signal": null,
+      "termination": "exit"
+    },
+    {
+      "attempt_id": "signal",
+      "cleanup_succeeded": true,
+      "exit_code": null,
+      "isolation_status": "passed",
+      "probe_report_sha256": "b2a561a8ed30a0946751fc4ee4f99d68c6c543c0b1646149b1c6db56c4cc8915",
+      "resource_observation_sha256": "79ff08457f11199201dd78e21959ef21d546029512cf0735f4503c839e49f791",
+      "resources": [
+        {
+          "kind": "wall_time_ms",
+          "limit": 750,
+          "observation_status": "observed",
+          "observed": 250
+        },
+        {
+          "kind": "cpu_time_usec",
+          "limit": 750000,
+          "observation_status": "unavailable",
+          "observed": null
+        },
+        {
+          "kind": "memory_peak_bytes",
+          "limit": 268435456,
+          "observation_status": "unavailable",
+          "observed": null
+        },
+        {
+          "kind": "pids_peak",
+          "limit": 32,
+          "observation_status": "unavailable",
+          "observed": null
+        },
+        {
+          "kind": "stdout_bytes",
+          "limit": 32768,
+          "observation_status": "observed",
+          "observed": 0
+        },
+        {
+          "kind": "stderr_bytes",
+          "limit": 32768,
+          "observation_status": "observed",
+          "observed": 0
+        },
+        {
+          "kind": "writable_bytes",
+          "limit": 1048576,
+          "observation_status": "unavailable",
+          "observed": null
+        }
+      ],
+      "runtime_report_sha256": "3215a890b93e359261db6a8be6baea4c6d356e53a4bb4a9b00d519e208b82d8c",
+      "signal": 9,
+      "termination": "signal"
+    },
+    {
+      "attempt_id": "timeout",
+      "cleanup_succeeded": true,
+      "exit_code": null,
+      "isolation_status": "passed",
+      "probe_report_sha256": "f40dedaaa83e4f8dfd5a3bf19fdea3ba63f3fd55c98a1c5958c0f802bd26b7d2",
+      "resource_observation_sha256": "79ff08457f11199201dd78e21959ef21d546029512cf0735f4503c839e49f791",
+      "resources": [
+        {
+          "kind": "wall_time_ms",
+          "limit": 750,
+          "observation_status": "observed",
+          "observed": 801
+        },
+        {
+          "kind": "cpu_time_usec",
+          "limit": 750000,
+          "observation_status": "unavailable",
+          "observed": null
+        },
+        {
+          "kind": "memory_peak_bytes",
+          "limit": 268435456,
+          "observation_status": "unavailable",
+          "observed": null
+        },
+        {
+          "kind": "pids_peak",
+          "limit": 32,
+          "observation_status": "unavailable",
+          "observed": null
+        },
+        {
+          "kind": "stdout_bytes",
+          "limit": 32768,
+          "observation_status": "observed",
+          "observed": 0
+        },
+        {
+          "kind": "stderr_bytes",
+          "limit": 32768,
+          "observation_status": "observed",
+          "observed": 0
+        },
+        {
+          "kind": "writable_bytes",
+          "limit": 1048576,
+          "observation_status": "unavailable",
+          "observed": null
+        }
+      ],
+      "runtime_report_sha256": "3215a890b93e359261db6a8be6baea4c6d356e53a4bb4a9b00d519e208b82d8c",
+      "signal": null,
+      "termination": "timeout"
+    },
+    {
+      "attempt_id": "output",
+      "cleanup_succeeded": true,
+      "exit_code": null,
+      "isolation_status": "passed",
+      "probe_report_sha256": "9e620513282b1f461b80f15f9bbf84a2fcab46fcb416579a76cf08dea2d9e87a",
+      "resource_observation_sha256": "79ff08457f11199201dd78e21959ef21d546029512cf0735f4503c839e49f791",
+      "resources": [
+        {
+          "kind": "wall_time_ms",
+          "limit": 750,
+          "observation_status": "observed",
+          "observed": 5091
+        },
+        {
+          "kind": "cpu_time_usec",
+          "limit": 750000,
+          "observation_status": "unavailable",
+          "observed": null
+        },
+        {
+          "kind": "memory_peak_bytes",
+          "limit": 268435456,
+          "observation_status": "unavailable",
+          "observed": null
+        },
+        {
+          "kind": "pids_peak",
+          "limit": 32,
+          "observation_status": "unavailable",
+          "observed": null
+        },
+        {
+          "kind": "stdout_bytes",
+          "limit": 32768,
+          "observation_status": "observed",
+          "observed": 32768
+        },
+        {
+          "kind": "stderr_bytes",
+          "limit": 32768,
+          "observation_status": "observed",
+          "observed": 0
+        },
+        {
+          "kind": "writable_bytes",
+          "limit": 1048576,
+          "observation_status": "unavailable",
+          "observed": null
+        }
+      ],
+      "runtime_report_sha256": "3215a890b93e359261db6a8be6baea4c6d356e53a4bb4a9b00d519e208b82d8c",
+      "signal": null,
+      "termination": "output_limit"
+    },
+    {
+      "attempt_id": "space",
+      "cleanup_succeeded": true,
+      "exit_code": 0,
+      "isolation_status": "passed",
+      "probe_report_sha256": "fbc48953c54525a0bf5d763fd9a19d695e72c62b2cf20b0476c58d9142ffdcb3",
+      "resource_observation_sha256": "c1b24d3944ca3c16d2c5d7f73f7dc9d67a31cb655bfcf9658fb9ce29d9a80354",
+      "resources": [
+        {
+          "kind": "wall_time_ms",
+          "limit": 750,
+          "observation_status": "observed",
+          "observed": 111
+        },
+        {
+          "kind": "cpu_time_usec",
+          "limit": 750000,
+          "observation_status": "observed",
+          "observed": 30874
+        },
+        {
+          "kind": "memory_peak_bytes",
+          "limit": 268435456,
+          "observation_status": "observed",
+          "observed": 8019968
+        },
+        {
+          "kind": "pids_peak",
+          "limit": 32,
+          "observation_status": "observed",
+          "observed": 6
+        },
+        {
+          "kind": "stdout_bytes",
+          "limit": 32768,
+          "observation_status": "observed",
+          "observed": 190
+        },
+        {
+          "kind": "stderr_bytes",
+          "limit": 32768,
+          "observation_status": "observed",
+          "observed": 0
+        },
+        {
+          "kind": "writable_bytes",
+          "limit": 1048576,
+          "observation_status": "observed",
+          "observed": 0
+        }
+      ],
+      "runtime_report_sha256": "3215a890b93e359261db6a8be6baea4c6d356e53a4bb4a9b00d519e208b82d8c",
+      "signal": null,
+      "termination": "exit"
+    }
+  ],
+  "failures": [],
+  "image_id": "sha256:4f3a6f74ec2dcabbe51d95744a0d6afef145bb09fda347bd5a866fd3dd85eff8",
+  "image_ref": "agent-runtime/clang-ctu@sha256:4f3a6f74ec2dcabbe51d95744a0d6afef145bb09fda347bd5a866fd3dd85eff8",
+  "limitations": [
+    "containment applies only to this Docker daemon, image, and fixed profile",
+    "timeout and output-limit are expected boundary observations, not target safety evidence"
+  ],
+  "report_sha256": "bf8d9fdadb3f2cf58bdf3d77b7632a85c573a55d7bf905852cc765449f4933ee",
+  "runner_tree_digest": "c38f4f76a0601e951971de96d725785a6f255913d8702210ae18b61105e3c7e9",
+  "schema": "agent-runtime/spec010-isolation-acceptance/v1",
+  "source_tree_digest": "361dc8e528a3a4ab9bd4e867c1848178d57ca649567b9e1787c7d3de80672503",
+  "status": "passed",
+  "suite_id": "isolation-v1"
+}
