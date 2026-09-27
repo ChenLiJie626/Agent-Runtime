@@ -2,6 +2,8 @@
 
 面向程序缺陷挖掘的可扩展 Python 基础包。架构为 **Claude Agent SDK 适配器 + 本包领域控制层**。当前本地发行线为 `0.3.0`：[S2](docs/07-S2-基础能力验收记录.md) 的 13 项基础能力门禁与 [S3](specs/007-release-and-extension.md) 的发行验收均已通过。项目采用 [MIT 许可证](LICENSE)，尚未发布到包索引。
 
+首次使用请先阅读 **[Quick Start](quickStart.md)**：用通俗语言介绍现有能力、三分钟体验、其他项目的安装方式、C++ UAF 示例、自定义规则接入和结果状态边界。
+
 ## 安装与验证
 
 Python 3.10+：
