@@ -68,6 +68,8 @@ Claude SDK 使用 `setting_sources=[]` 隔离用户与目标仓库设置。若�
 
 先读[规格导航](specs/README.md)：SPEC 000/002/003/004/006/007 是当前基础包门禁；SPEC 001/005 是后续空返回规则插件示例。
 
+新的通用化方向讨论稿见[通用 Agent Runtime 基座：需求、运行时分层与开源复用方案](docs/14-通用Agent-Runtime基座需求与开源复用方案.md)。该文档提出将现有缺陷分析能力下沉为 Domain Pack，并基于开放 Agent Skills 与通用开源框架建设新 Core；当前实现仍以本 README 的 `defect-agent-runtime 0.3.0` 为准。
+
 1. [原始交接文档](Claude_Agent_SDK_Agent层开发交接_精简版_v1.1.md)：问题背景与跨文件空返回样例。
 2. [需求基线与范围](docs/00-需求基线与范围.md)：使用者、P0 需求、边界与待决问题。
 3. [开源调研与复用决策](docs/01-开源调研与复用决策.md)：Claude Agent SDK、audit、Joern、codebadger、CodeChecker、Clang、CodeQL 等项目的适配判断。
